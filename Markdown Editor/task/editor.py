@@ -1,52 +1,51 @@
-
 # EDITOR STATE
 markdown = """"""
 
 # FILES
-output_file_name = "output.md"
+OUTPUT_FILE_NAME = "output.md"
 
 # OPTIONS
-option_help = "!help"
-option_done = "!done"
+OPTION_HELP = "!help"
+OPTION_DONE = "!done"
 
 # MESSAGES
-msg_help = """Available formatters: plain bold italic header link inline-code new-line
+MSG_HELP = """Available formatters: plain bold italic header link inline-code new-line
 Special commands: !help !done"""
-msg_formatter = "Choose a formatter: "
-msg_text = "Text: "
-msg_level = "Level: "
-msg_label = "Label: "
-msg_url = "URL: "
-msg_row = "Row "
-msg_rows = "Number of rows: "
-msg_unknown_formatting = "Unknown formatting type or command"
-msg_level_error = "The level should be within the range of 1 to 6"
-msg_rows_error = "The number of rows should be greater than zero"
+MSG_FORMATTER = "Choose a formatter: "
+MSG_TEXT = "Text: "
+MSG_LEVEL = "Level: "
+MSG_LABEL = "Label: "
+MSG_URL = "URL: "
+MSG_ROW = "Row "
+MSG_ROWS = "Number of rows: "
+MSG_ERROR_LEVEL = "The level should be within the range of 1 to 6"
+MSG_ERROR_ROWS = "The number of rows should be greater than zero"
+MSG_UNKNOWN_FORMATTING = "Unknown formatting type or command"
 
 # MAPPING: INPUT TO MESSAGE
-formatter_title_type = "Formatter"
-text_title_type = "Text"
-level_title_type = "Level"
-label_title_type = "Label"
-url_title_type = "URL"
-rows_title_type = "Rows"
+TITLE_FORMATTER = "Formatter"
+TITLE_TEXT = "Text"
+TITLE_LEVEL = "Level"
+TITLE_LABEL = "Label"
+TITLE_URL = "URL"
+TITLE_ROWS = "Rows"
 title_types_msgs = {
-    formatter_title_type: msg_formatter,
-    text_title_type: msg_text,
-    level_title_type: msg_level,
-    label_title_type: msg_label,
-    url_title_type: msg_url,
-    rows_title_type: msg_rows
+    TITLE_FORMATTER: MSG_FORMATTER,
+    TITLE_TEXT: MSG_TEXT,
+    TITLE_LEVEL: MSG_LEVEL,
+    TITLE_LABEL: MSG_LABEL,
+    TITLE_URL: MSG_URL,
+    TITLE_ROWS: MSG_ROWS
 }
 
 
 # IMPLEMENTATION: OPTIONS
 def apply_option_help():
-    print(msg_help)
+    print(MSG_HELP)
 
 
 def apply_option_done():
-    file = open(output_file_name, 'w+')
+    file = open(OUTPUT_FILE_NAME, 'w+')
     file.write(markdown)
     file.close()
 
@@ -59,9 +58,9 @@ def input_text(title_type):
 
 def input_level():
     while True:
-        level = int(input_text(level_title_type))
+        level = int(input_text(TITLE_LEVEL))
         if not 1 <= level <= 6:
-            print(msg_level_error)
+            print(MSG_ERROR_LEVEL)
             continue
         else:
             return level
@@ -74,10 +73,10 @@ def input_row(row_number):
 
 def input_rows():
     while True:
-        print(msg_rows, end='')
+        print(MSG_ROWS, end='')
         rows = int(input())
         if not rows > 0:
-            print(msg_rows_error)
+            print(MSG_ERROR_ROWS)
         else:
             return rows
 
@@ -85,7 +84,7 @@ def input_rows():
 # IMPLEMENTATION: FORMATTERS
 def format_header():
     level = input_level()
-    text = input_text(text_title_type)
+    text = input_text(TITLE_TEXT)
     conditional_new_line = ''
     if markdown != """""":
         conditional_new_line = '\n'
@@ -93,16 +92,16 @@ def format_header():
 
 
 def format_bold():
-    text = input_text(text_title_type)
+    text = input_text(TITLE_TEXT)
     return f'**{text}**'
 
 
 def format_plain():
-    return input_text(text_title_type)
+    return input_text(TITLE_TEXT)
 
 
 def format_inline_code():
-    text = input_text(text_title_type)
+    text = input_text(TITLE_TEXT)
     return f'`{text}`'
 
 
@@ -111,13 +110,13 @@ def format_new_line():
 
 
 def format_link():
-    label = input_text(label_title_type)
-    url = input_text(url_title_type)
+    label = input_text(TITLE_LABEL)
+    url = input_text(TITLE_URL)
     return f'[{label}]({url})'
 
 
 def format_italic():
-    text = input_text(text_title_type)
+    text = input_text(TITLE_TEXT)
     return f'*{text}*'
 
 
@@ -151,8 +150,8 @@ formatters = {
 
 # MAPPING: OPTION TO IMPLEMENTATION
 options = {
-    option_help: apply_option_help,
-    option_done: apply_option_done
+    OPTION_HELP: apply_option_help,
+    OPTION_DONE: apply_option_done
 }
 
 
@@ -168,15 +167,15 @@ def apply_option(option):
 
 # ENTRANCE
 while True:
-    choice = input_text(formatter_title_type)
+    choice = input_text(TITLE_FORMATTER)
     if choice in formatters:
         markdown += apply_formatter(choice)
     elif choice in options:
         apply_option(choice)
-        if choice == option_done:
+        if choice == OPTION_DONE:
             break
     else:
-        print(msg_unknown_formatting)
+        print(MSG_UNKNOWN_FORMATTING)
         continue
 
     print(markdown)
