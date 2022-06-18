@@ -9,7 +9,7 @@ OPTION_HELP = "!help"
 OPTION_DONE = "!done"
 
 # MESSAGES
-MSG_HELP = """Available formatters: plain bold italic header link inline-code new-line
+MSG_HELP = """Available formatters: plain bold italic header link inline-code new-line ordered-list unordered-list
 Special commands: !help !done"""
 MSG_FORMATTER = "Choose a formatter: "
 MSG_TEXT = "Text: "
