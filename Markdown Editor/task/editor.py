@@ -40,7 +40,7 @@ title_types_msgs = {
 }
 
 
-# OPTION IMPLEMENTATION
+# IMPLEMENTATION: OPTIONS
 def apply_option_help():
     print(msg_help)
 
@@ -51,7 +51,7 @@ def apply_option_done():
     file.close()
 
 
-# INPUT IMPLEMENTATION
+# IMPLEMENTATION: INPUTS
 def input_text(title_type):
     print(title_types_msgs[title_type], end='')
     return input()
@@ -82,7 +82,7 @@ def input_rows():
             return rows
 
 
-# FORMATTER IMPLEMENTATION
+# IMPLEMENTATION: FORMATTERS
 def format_header():
     level = input_level()
     text = input_text(text_title_type)
