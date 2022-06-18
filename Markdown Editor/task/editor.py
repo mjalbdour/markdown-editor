@@ -1,4 +1,15 @@
 
+# EDITOR STATE
+markdown = """"""
+
+# FILES
+output_file_name = "output.md"
+
+# OPTIONS
+option_help = "!help"
+option_done = "!done"
+
+# MESSAGES
 msg_help = """Available formatters: plain bold italic header link inline-code new-line
 Special commands: !help !done"""
 msg_formatter = "Choose a formatter: "
@@ -12,6 +23,7 @@ msg_unknown_formatting = "Unknown formatting type or command"
 msg_level_error = "The level should be within the range of 1 to 6"
 msg_rows_error = "The number of rows should be greater than zero"
 
+# MAPPING: INPUT TO MESSAGE
 formatter_title_type = "Formatter"
 text_title_type = "Text"
 level_title_type = "Level"
@@ -27,21 +39,27 @@ title_types_msgs = {
     rows_title_type: msg_rows
 }
 
-option_help = "!help"
-option_done = "!done"
-options = {option_help, option_done}
 
-markdown = """"""
+# OPTION IMPLEMENTATION
+def apply_option_help():
+    print(msg_help)
 
 
-def text_input(title_type):
+def apply_option_done():
+    file = open(output_file_name, 'w+')
+    file.write(markdown)
+    file.close()
+
+
+# INPUT IMPLEMENTATION
+def input_text(title_type):
     print(title_types_msgs[title_type], end='')
     return input()
 
 
-def level_input():
+def input_level():
     while True:
-        level = int(text_input(level_title_type))
+        level = int(input_text(level_title_type))
         if not 1 <= level <= 6:
             print(msg_level_error)
             continue
@@ -49,12 +67,12 @@ def level_input():
             return level
 
 
-def row_input(row_number):
+def input_row(row_number):
     print(f'Row #{row_number}: ', end='')
     return input()
 
 
-def rows_input():
+def input_rows():
     while True:
         print(msg_rows, end='')
         rows = int(input())
@@ -64,51 +82,52 @@ def rows_input():
             return rows
 
 
-def header_formatter():
-    level = level_input()
-    text = text_input("Text")
+# FORMATTER IMPLEMENTATION
+def format_header():
+    level = input_level()
+    text = input_text(text_title_type)
     conditional_new_line = ''
     if markdown != """""":
         conditional_new_line = '\n'
-    return f'{conditional_new_line}{"#" * level} {text}{new_line_formatter()}'
+    return f'{conditional_new_line}{"#" * level} {text}{format_new_line()}'
 
 
-def bold_formatter():
-    text = text_input("Text")
+def format_bold():
+    text = input_text(text_title_type)
     return f'**{text}**'
 
 
-def plain_formatter():
-    return text_input(text_title_type)
+def format_plain():
+    return input_text(text_title_type)
 
 
-def inline_code_formatter():
-    text = text_input(text_title_type)
+def format_inline_code():
+    text = input_text(text_title_type)
     return f'`{text}`'
 
 
-def new_line_formatter():
+def format_new_line():
     return '\n'
 
 
-def link_formatter():
-    label = text_input(label_title_type)
-    url = text_input(url_title_type)
+def format_link():
+    label = input_text(label_title_type)
+    url = input_text(url_title_type)
     return f'[{label}]({url})'
 
 
-def italic_formatter():
-    text = text_input("Text")
+def format_italic():
+    text = input_text(text_title_type)
     return f'*{text}*'
 
 
-def list_formatter(ordered=True):
-    rows = rows_input()
+def format_list(ordered=True):
+    rows = input_rows()
     string = ""
     if markdown != """""":
         string += '\n'
     for i in range(1, rows + 1):
-        text = row_input(i)
+        text = input_row(i)
         if ordered:
             string += f'{i}. {text}\n'
         else:
@@ -117,31 +136,44 @@ def list_formatter(ordered=True):
     return string
 
 
+# MAPPING: FORMATTER TO IMPLEMENTATION
 formatters = {
-    "plain": plain_formatter,
-    "bold": bold_formatter,
-    "italic": italic_formatter,
-    "header": header_formatter,
-    "link": link_formatter,
-    "inline-code": inline_code_formatter,
-    "new-line": new_line_formatter,
-    "ordered-list": lambda: list_formatter(),
-    "unordered-list": lambda: list_formatter(ordered=False),
+    "plain": format_plain,
+    "bold": format_bold,
+    "italic": format_italic,
+    "header": format_header,
+    "link": format_link,
+    "inline-code": format_inline_code,
+    "new-line": format_new_line,
+    "ordered-list": lambda: format_list(),
+    "unordered-list": lambda: format_list(ordered=False)
+}
+
+# MAPPING: OPTION TO IMPLEMENTATION
+options = {
+    option_help: apply_option_help,
+    option_done: apply_option_done
 }
 
 
+# GATE: FORMATTERS
 def apply_formatter(formatter):
     return formatters[formatter]()
 
 
+# GATE: OPTIONS
+def apply_option(option):
+    options[option]()
+
+
+# ENTRANCE
 while True:
-    choice = text_input(formatter_title_type)
+    choice = input_text(formatter_title_type)
     if choice in formatters:
         markdown += apply_formatter(choice)
     elif choice in options:
-        if choice == option_help:
-            print(msg_help)
-        elif choice == option_done:
+        apply_option(choice)
+        if choice == option_done:
             break
     else:
         print(msg_unknown_formatting)
